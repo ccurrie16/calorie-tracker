@@ -1,0 +1,35 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1>🔥 Calorie Tracker</h1>
+    <h2>{{ isSignup ? 'Create Account' : 'Welcome Back' }}</h2>
+
+    <div class="form">
+      <input
+        type="email"
+        placeholder="Email"
+        [(ngModel)]="email"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        [(ngModel)]="password"
+      />
+
+      <button class="btn-primary" (click)="onSubmit()">
+        {{ isSignup ? 'Sign Up' : 'Login' }}
+      </button>
+
+      <div class="divider">or</div>
+
+      <button class="btn-google" (click)="googleSignIn()">
+        Sign in with Google
+      </button>
+
+      <p class="toggle" (click)="toggleMode()">
+        {{ isSignup ? 'Already have an account? Login' : "Don't have an account? Sign Up" }}
+      </p>
+
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </div>
+  </div>
+</div>

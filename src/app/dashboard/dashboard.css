@@ -1,0 +1,188 @@
+.dashboard-container {
+  min-height: 100vh;
+  background: #f0f4f8;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.header {
+  background: #4CAF50;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-logout {
+  background: white;
+  color: #4CAF50;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.content {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.calories-summary {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.calories-consumed {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.calories-divider {
+  font-size: 1.5rem;
+  color: #aaa;
+}
+
+.calories-goal {
+  font-size: 1.5rem;
+  color: #aaa;
+}
+
+.progress-bar {
+  background: #e0e0e0;
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4CAF50;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.macros {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.macro {
+  display: flex;
+  flex-direction: column;
+}
+
+.macro-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.macro-label {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.meal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.meal-form input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.meal-form input:focus {
+  border-color: #4CAF50;
+}
+
+.btn-primary {
+  padding: 0.75rem;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: #43A047;
+}
+
+.empty {
+  text-align: center;
+  color: #aaa;
+  padding: 1rem;
+}
+
+.meal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.meal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.meal-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.meal-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.meal-macros {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.meal-calories {
+  font-weight: bold;
+  color: #4CAF50;
+}

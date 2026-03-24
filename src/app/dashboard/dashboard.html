@@ -1,0 +1,66 @@
+<div class="dashboard-container">
+  <header class="header">
+    <h1>🔥 Calorie Tracker</h1>
+    <div class="header-right">
+      <span>{{ today }}</span>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Daily Goal Progress -->
+    <div class="card">
+      <h2>Daily Progress</h2>
+      <div class="calories-summary">
+        <span class="calories-consumed">{{ totalCalories }}</span>
+        <span class="calories-divider"> / </span>
+        <span class="calories-goal">{{ dailyGoal }} kcal</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="calorieProgress"></div>
+      </div>
+      <div class="macros">
+        <div class="macro">
+          <span class="macro-value">{{ totalProtein }}g</span>
+          <span class="macro-label">Protein</span>
+        </div>
+        <div class="macro">
+          <span class="macro-value">{{ totalCarbs }}g</span>
+          <span class="macro-label">Carbs</span>
+        </div>
+        <div class="macro">
+          <span class="macro-value">{{ totalFat }}g</span>
+          <span class="macro-label">Fat</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Meal Form -->
+    <div class="card">
+      <h2>Log a Meal</h2>
+      <div class="meal-form">
+        <input type="text" placeholder="Meal name" [(ngModel)]="newMeal.name" />
+        <input type="number" placeholder="Calories" [(ngModel)]="newMeal.calories" />
+        <input type="number" placeholder="Protein (g)" [(ngModel)]="newMeal.protein" />
+        <input type="number" placeholder="Carbs (g)" [(ngModel)]="newMeal.carbs" />
+        <input type="number" placeholder="Fat (g)" [(ngModel)]="newMeal.fat" />
+        <button class="btn-primary" (click)="addMeal()">Add Meal</button>
+      </div>
+    </div>
+
+    <!-- Meal List -->
+    <div class="card">
+      <h2>Today's Meals</h2>
+      <div *ngIf="meals.length === 0" class="empty">No meals logged yet today.</div>
+      <div class="meal-list">
+        <div class="meal-item" *ngFor="let meal of meals">
+          <div class="meal-info">
+            <span class="meal-name">{{ meal.name }}</span>
+            <span class="meal-macros">P: {{ meal.protein }}g · C: {{ meal.carbs }}g · F: {{ meal.fat }}g</span>
+          </div>
+          <span class="meal-calories">{{ meal.calories }} kcal</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
