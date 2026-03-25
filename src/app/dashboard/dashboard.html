@@ -2,7 +2,12 @@
   <header class="header">
     <h1>🔥 Calorie Tracker</h1>
     <div class="header-right">
-      <span>{{ today }}</span>
+      <div class="date-nav">
+        <button class="btn-date" (click)="changeDate(-1)">&lt;</button>
+        <span class="date-label">{{ selectedDate }}</span>
+        <button class="btn-date" (click)="changeDate(1)">&gt;</button>
+        <button *ngIf="!isToday" class="btn-today" (click)="goToToday()">Today</button>
+      </div>
       <button class="btn-logout" (click)="logout()">Logout</button>
     </div>
   </header>
@@ -50,8 +55,8 @@
 
     <!-- Meal List -->
     <div class="card">
-      <h2>Today's Meals</h2>
-      <div *ngIf="meals.length === 0" class="empty">No meals logged yet today.</div>
+      <h2>Meals</h2>
+      <div *ngIf="meals.length === 0" class="empty">No meals logged for this day.</div>
       <div class="meal-list">
         <div class="meal-item" *ngFor="let meal of meals">
           <ng-container *ngIf="editingMeal?.id === meal.id; else viewMode">

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc, Unsubscribe } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { AuthService } from '../auth/auth';
 import { inject } from '@angular/core';
@@ -24,14 +24,15 @@ interface Meal {
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard implements OnInit {
+export class Dashboard implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
 
   meals: Meal[] = [];
   editingMeal: Meal | null = null;
   dailyGoal = 2000;
-  today = new Date().toISOString().split('T')[0];
+  selectedDate = new Date().toISOString().split('T')[0];
+  private mealsUnsubscribe: Unsubscribe | null = null;
 
   newMeal: Meal = {
     name: '',
@@ -39,11 +40,40 @@ export class Dashboard implements OnInit {
     protein: 0,
     carbs: 0,
     fat: 0,
-    date: this.today,
+    date: this.selectedDate,
     userId: ''
   };
 
   ngOnInit() {
+    this.loadMeals();
+  }
+
+  ngOnDestroy() {
+    this.mealsUnsubscribe?.();
+  }
+
+  get isToday() {
+    return this.selectedDate === new Date().toISOString().split('T')[0];
+  }
+
+  changeDate(offset: number) {
+    const date = new Date(this.selectedDate + 'T00:00:00');
+    date.setDate(date.getDate() + offset);
+    this.selectedDate = date.toISOString().split('T')[0];
+    this.newMeal.date = this.selectedDate;
+    this.editingMeal = null;
+    this.loadMeals();
+  }
+
+  goToToday() {
+    this.selectedDate = new Date().toISOString().split('T')[0];
+    this.newMeal.date = this.selectedDate;
+    this.editingMeal = null;
+    this.loadMeals();
+  }
+
+  private loadMeals() {
+    this.mealsUnsubscribe?.();
     const user = auth.currentUser;
     if (!user) return;
 
@@ -51,9 +81,9 @@ export class Dashboard implements OnInit {
     const mealsQuery = query(
       mealsRef,
       where('userId', '==', user.uid),
-      where('date', '==', this.today)
+      where('date', '==', this.selectedDate)
     );
-    onSnapshot(mealsQuery, snapshot => {
+    this.mealsUnsubscribe = onSnapshot(mealsQuery, snapshot => {
       this.meals = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Meal));
     });
   }
@@ -91,7 +121,7 @@ export class Dashboard implements OnInit {
       protein: 0,
       carbs: 0,
       fat: 0,
-      date: this.today,
+      date: this.selectedDate,
       userId: ''
     };
   }
