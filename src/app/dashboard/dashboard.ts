@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc, Unsubscribe } from 'firebase/firestore';
+import { collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc, Unsubscribe } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { AuthService } from '../auth/auth';
 import { inject } from '@angular/core';
@@ -31,6 +31,8 @@ export class Dashboard implements OnInit, OnDestroy {
   meals: Meal[] = [];
   editingMeal: Meal | null = null;
   dailyGoal = 2000;
+  editingGoal = false;
+  goalInput = 2000;
   selectedDate = new Date().toISOString().split('T')[0];
   private mealsUnsubscribe: Unsubscribe | null = null;
 
@@ -45,6 +47,7 @@ export class Dashboard implements OnInit, OnDestroy {
   };
 
   ngOnInit() {
+    this.loadGoal();
     this.loadMeals();
   }
 
@@ -73,6 +76,33 @@ export class Dashboard implements OnInit, OnDestroy {
     this.newMeal.date = this.selectedDate;
     this.editingMeal = null;
     this.loadMeals();
+  }
+
+  private async loadGoal() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (userDoc.exists() && userDoc.data()['dailyGoal']) {
+      this.dailyGoal = userDoc.data()['dailyGoal'];
+      this.goalInput = this.dailyGoal;
+    }
+  }
+
+  startEditGoal() {
+    this.goalInput = this.dailyGoal;
+    this.editingGoal = true;
+  }
+
+  cancelEditGoal() {
+    this.editingGoal = false;
+  }
+
+  async saveGoal() {
+    const user = auth.currentUser;
+    if (!user || !this.goalInput || this.goalInput <= 0) return;
+    await setDoc(doc(db, 'users', user.uid), { dailyGoal: this.goalInput }, { merge: true });
+    this.dailyGoal = this.goalInput;
+    this.editingGoal = false;
   }
 
   private loadMeals() {

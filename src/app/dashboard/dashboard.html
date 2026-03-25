@@ -19,7 +19,14 @@
       <div class="calories-summary">
         <span class="calories-consumed">{{ totalCalories }}</span>
         <span class="calories-divider"> / </span>
-        <span class="calories-goal">{{ dailyGoal }} kcal</span>
+        <ng-container *ngIf="editingGoal; else goalView">
+          <input type="number" class="goal-input" [(ngModel)]="goalInput" />
+          <button class="btn-save btn-small" (click)="saveGoal()">Save</button>
+          <button class="btn-cancel btn-small" (click)="cancelEditGoal()">Cancel</button>
+        </ng-container>
+        <ng-template #goalView>
+          <span class="calories-goal" (click)="startEditGoal()">{{ dailyGoal }} kcal</span>
+        </ng-template>
       </div>
       <div class="progress-bar">
         <div class="progress-fill" [style.width.%]="calorieProgress"></div>
