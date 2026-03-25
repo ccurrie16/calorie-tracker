@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { collection, addDoc, query, where, onSnapshot } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { AuthService } from '../auth/auth';
 import { inject } from '@angular/core';
@@ -44,20 +43,17 @@ export class Dashboard implements OnInit {
   };
 
   ngOnInit() {
-    onAuthStateChanged(auth, user => {
-      if (!user) {
-        this.router.navigate(['/login']);
-        return;
-      }
-      const mealsRef = collection(db, 'meals');
-      const mealsQuery = query(
-        mealsRef,
-        where('userId', '==', user.uid),
-        where('date', '==', this.today)
-      );
-      onSnapshot(mealsQuery, snapshot => {
-        this.meals = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Meal));
-      });
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const mealsRef = collection(db, 'meals');
+    const mealsQuery = query(
+      mealsRef,
+      where('userId', '==', user.uid),
+      where('date', '==', this.today)
+    );
+    onSnapshot(mealsQuery, snapshot => {
+      this.meals = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Meal));
     });
   }
 
