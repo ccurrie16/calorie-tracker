@@ -32,15 +32,15 @@
         <div class="progress-fill" [style.width.%]="calorieProgress"></div>
       </div>
       <div class="macros">
-        <div class="macro">
+        <div class="macro macro-protein">
           <span class="macro-value">{{ totalProtein }}g</span>
           <span class="macro-label">Protein</span>
         </div>
-        <div class="macro">
+        <div class="macro macro-carbs">
           <span class="macro-value">{{ totalCarbs }}g</span>
           <span class="macro-label">Carbs</span>
         </div>
-        <div class="macro">
+        <div class="macro macro-fat">
           <span class="macro-value">{{ totalFat }}g</span>
           <span class="macro-label">Fat</span>
         </div>
@@ -82,7 +82,7 @@
           <ng-template #viewMode>
             <div class="meal-info">
               <span class="meal-name">{{ meal.name }}</span>
-              <span class="meal-macros">P: {{ meal.protein }}g · C: {{ meal.carbs }}g · F: {{ meal.fat }}g</span>
+              <span class="meal-macros"><span class="text-protein">P: {{ meal.protein }}g</span> · <span class="text-carbs">C: {{ meal.carbs }}g</span> · <span class="text-fat">F: {{ meal.fat }}g</span></span>
             </div>
             <div class="meal-actions">
               <span class="meal-calories">{{ meal.calories }} kcal</span>
