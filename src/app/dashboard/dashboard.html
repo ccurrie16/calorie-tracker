@@ -5,7 +5,7 @@
       <div class="date-nav">
         <button class="btn-date" (click)="changeDate(-1)">&lt;</button>
         <span class="date-label">{{ selectedDate }}</span>
-        <button class="btn-date" (click)="changeDate(1)">&gt;</button>
+        <button *ngIf="!isToday" class="btn-date" (click)="changeDate(1)">&gt;</button>
         <button *ngIf="!isToday" class="btn-today" (click)="goToToday()">Today</button>
       </div>
       <button class="btn-logout" (click)="logout()">Logout</button>

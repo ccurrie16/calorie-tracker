@@ -59,7 +59,10 @@ export class Dashboard implements OnInit, OnDestroy {
   changeDate(offset: number) {
     const date = new Date(this.selectedDate + 'T00:00:00');
     date.setDate(date.getDate() + offset);
-    this.selectedDate = date.toISOString().split('T')[0];
+    const newDate = date.toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    if (newDate > today) return;
+    this.selectedDate = newDate;
     this.newMeal.date = this.selectedDate;
     this.editingMeal = null;
     this.loadMeals();
