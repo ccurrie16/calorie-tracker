@@ -54,11 +54,30 @@
       <div *ngIf="meals.length === 0" class="empty">No meals logged yet today.</div>
       <div class="meal-list">
         <div class="meal-item" *ngFor="let meal of meals">
-          <div class="meal-info">
-            <span class="meal-name">{{ meal.name }}</span>
-            <span class="meal-macros">P: {{ meal.protein }}g · C: {{ meal.carbs }}g · F: {{ meal.fat }}g</span>
-          </div>
-          <span class="meal-calories">{{ meal.calories }} kcal</span>
+          <ng-container *ngIf="editingMeal?.id === meal.id; else viewMode">
+            <div class="meal-edit-form">
+              <input type="text" [(ngModel)]="editingMeal!.name" />
+              <input type="number" [(ngModel)]="editingMeal!.calories" placeholder="Calories" />
+              <input type="number" [(ngModel)]="editingMeal!.protein" placeholder="Protein" />
+              <input type="number" [(ngModel)]="editingMeal!.carbs" placeholder="Carbs" />
+              <input type="number" [(ngModel)]="editingMeal!.fat" placeholder="Fat" />
+              <div class="meal-edit-actions">
+                <button class="btn-save" (click)="saveEdit()">Save</button>
+                <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #viewMode>
+            <div class="meal-info">
+              <span class="meal-name">{{ meal.name }}</span>
+              <span class="meal-macros">P: {{ meal.protein }}g · C: {{ meal.carbs }}g · F: {{ meal.fat }}g</span>
+            </div>
+            <div class="meal-actions">
+              <span class="meal-calories">{{ meal.calories }} kcal</span>
+              <button class="btn-edit" (click)="startEdit(meal)">Edit</button>
+              <button class="btn-delete" (click)="deleteMeal(meal)">Delete</button>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>

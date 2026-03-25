@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { collection, addDoc, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { AuthService } from '../auth/auth';
 import { inject } from '@angular/core';
@@ -29,6 +29,7 @@ export class Dashboard implements OnInit {
   private router = inject(Router);
 
   meals: Meal[] = [];
+  editingMeal: Meal | null = null;
   dailyGoal = 2000;
   today = new Date().toISOString().split('T')[0];
 
@@ -93,6 +94,27 @@ export class Dashboard implements OnInit {
       date: this.today,
       userId: ''
     };
+  }
+
+  startEdit(meal: Meal) {
+    this.editingMeal = { ...meal };
+  }
+
+  cancelEdit() {
+    this.editingMeal = null;
+  }
+
+  async saveEdit() {
+    if (!this.editingMeal?.id) return;
+    const mealRef = doc(db, 'meals', this.editingMeal.id);
+    const { id, ...data } = this.editingMeal;
+    await updateDoc(mealRef, data);
+    this.editingMeal = null;
+  }
+
+  async deleteMeal(meal: Meal) {
+    if (!meal.id) return;
+    await deleteDoc(doc(db, 'meals', meal.id));
   }
 
   async logout() {
