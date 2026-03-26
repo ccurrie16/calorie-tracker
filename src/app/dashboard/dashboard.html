@@ -34,17 +34,17 @@
       <div class="nutrient-bars">
         <div class="nutrient-row">
           <span class="nutrient-label">Protein</span>
-          <div class="nutrient-bar-track"><div class="nutrient-bar-fill protein" [style.width.%]="nutrientBar(totalProtein, 50)"></div></div>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill protein" [style.width.%]="nutrientBar(totalProtein, proteinGoal)"></div></div>
           <span class="nutrient-value">{{ totalProtein }}g</span>
         </div>
         <div class="nutrient-row">
           <span class="nutrient-label">Carbs</span>
-          <div class="nutrient-bar-track"><div class="nutrient-bar-fill carbs" [style.width.%]="nutrientBar(totalCarbs, 275)"></div></div>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill carbs" [style.width.%]="nutrientBar(totalCarbs, carbsGoal)"></div></div>
           <span class="nutrient-value">{{ totalCarbs }}g</span>
         </div>
         <div class="nutrient-row">
           <span class="nutrient-label">Fat</span>
-          <div class="nutrient-bar-track"><div class="nutrient-bar-fill fat" [style.width.%]="nutrientBar(totalFat, 78)"></div></div>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill fat" [style.width.%]="nutrientBar(totalFat, fatGoal)"></div></div>
           <span class="nutrient-value">{{ totalFat }}g</span>
         </div>
         <div class="nutrient-row">
@@ -172,17 +172,17 @@
             <div class="meal-nutrients">
               <div class="meal-nutrient-row">
                 <span class="nutrient-label">Protein</span>
-                <div class="nutrient-bar-track"><div class="nutrient-bar-fill protein" [style.width.%]="nutrientBar(meal.protein, 50)"></div></div>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill protein" [style.width.%]="nutrientBar(meal.protein, proteinGoal)"></div></div>
                 <span class="nutrient-value">{{ meal.protein }}g</span>
               </div>
               <div class="meal-nutrient-row">
                 <span class="nutrient-label">Carbs</span>
-                <div class="nutrient-bar-track"><div class="nutrient-bar-fill carbs" [style.width.%]="nutrientBar(meal.carbs, 275)"></div></div>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill carbs" [style.width.%]="nutrientBar(meal.carbs, carbsGoal)"></div></div>
                 <span class="nutrient-value">{{ meal.carbs }}g</span>
               </div>
               <div class="meal-nutrient-row">
                 <span class="nutrient-label">Fat</span>
-                <div class="nutrient-bar-track"><div class="nutrient-bar-fill fat" [style.width.%]="nutrientBar(meal.fat, 78)"></div></div>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill fat" [style.width.%]="nutrientBar(meal.fat, fatGoal)"></div></div>
                 <span class="nutrient-value">{{ meal.fat }}g</span>
               </div>
               <div class="meal-nutrient-row">
