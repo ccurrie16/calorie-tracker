@@ -277,6 +277,8 @@ export class Dashboard implements OnInit, OnDestroy {
   get carbsGoal()   { return Math.round(this.dailyGoal * 0.50 / 4); }
   get fatGoal()     { return Math.round(this.dailyGoal * 0.25 / 9); }
 
+  get caloriesRemaining() { return this.dailyGoal - this.totalCalories; }
+
   get calorieProgress() {
     return Math.min((this.totalCalories / this.dailyGoal) * 100, 100);
   }

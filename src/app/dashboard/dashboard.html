@@ -31,6 +31,9 @@
       <div class="progress-bar">
         <div class="progress-fill" [style.width.%]="calorieProgress"></div>
       </div>
+      <div class="calories-remaining" [class.over]="caloriesRemaining < 0">
+        {{ caloriesRemaining < 0 ? (caloriesRemaining * -1) + ' kcal over' : caloriesRemaining + ' kcal remaining' }}
+      </div>
       <div class="nutrient-bars">
         <div class="nutrient-row">
           <span class="nutrient-label">Protein</span>
