@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:calorie-tracker": "node dist/calorie-tracker/server/server.mjs"
+    "serve:ssr:calorie-tracker": "node dist/calorie-tracker/server/server.mjs",
+    "deploy": "ng build --base-href /calorie-tracker/ && copy dist\\calorie-tracker\\browser\\index.csr.html dist\\calorie-tracker\\browser\\index.html && npx angular-cli-ghpages --dir=dist/calorie-tracker/browser"
   },
   "private": true,
   "packageManager": "npm@11.10.1",
