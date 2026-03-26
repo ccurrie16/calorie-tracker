@@ -31,18 +31,41 @@
       <div class="progress-bar">
         <div class="progress-fill" [style.width.%]="calorieProgress"></div>
       </div>
-      <div class="macros">
-        <div class="macro macro-protein">
-          <span class="macro-value">{{ totalProtein }}g</span>
-          <span class="macro-label">Protein</span>
+      <div class="nutrient-bars">
+        <div class="nutrient-row">
+          <span class="nutrient-label">Protein</span>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill protein" [style.width.%]="nutrientBar(totalProtein, 50)"></div></div>
+          <span class="nutrient-value">{{ totalProtein }}g</span>
         </div>
-        <div class="macro macro-carbs">
-          <span class="macro-value">{{ totalCarbs }}g</span>
-          <span class="macro-label">Carbs</span>
+        <div class="nutrient-row">
+          <span class="nutrient-label">Carbs</span>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill carbs" [style.width.%]="nutrientBar(totalCarbs, 275)"></div></div>
+          <span class="nutrient-value">{{ totalCarbs }}g</span>
         </div>
-        <div class="macro macro-fat">
-          <span class="macro-value">{{ totalFat }}g</span>
-          <span class="macro-label">Fat</span>
+        <div class="nutrient-row">
+          <span class="nutrient-label">Fat</span>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill fat" [style.width.%]="nutrientBar(totalFat, 78)"></div></div>
+          <span class="nutrient-value">{{ totalFat }}g</span>
+        </div>
+        <div class="nutrient-row">
+          <span class="nutrient-label">Fiber</span>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill fiber" [style.width.%]="nutrientBar(totalFiber, 28)"></div></div>
+          <span class="nutrient-value">{{ totalFiber }}g</span>
+        </div>
+        <div class="nutrient-row">
+          <span class="nutrient-label">Sugar</span>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill sugar" [style.width.%]="nutrientBar(totalSugar, 50)"></div></div>
+          <span class="nutrient-value">{{ totalSugar }}g</span>
+        </div>
+        <div class="nutrient-row">
+          <span class="nutrient-label">Sodium</span>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill sodium" [style.width.%]="nutrientBar(totalSodium, 2300)"></div></div>
+          <span class="nutrient-value">{{ totalSodium }}mg</span>
+        </div>
+        <div class="nutrient-row">
+          <span class="nutrient-label">Sat. Fat</span>
+          <div class="nutrient-bar-track"><div class="nutrient-bar-fill sat-fat" [style.width.%]="nutrientBar(totalSaturatedFat, 20)"></div></div>
+          <span class="nutrient-value">{{ totalSaturatedFat }}g</span>
         </div>
       </div>
     </div>
@@ -77,6 +100,10 @@
         <input type="number" placeholder="Protein (g)" [(ngModel)]="newMeal.protein" />
         <input type="number" placeholder="Carbs (g)" [(ngModel)]="newMeal.carbs" />
         <input type="number" placeholder="Fat (g)" [(ngModel)]="newMeal.fat" />
+        <input type="number" placeholder="Fiber (g)" [(ngModel)]="newMeal.fiber" />
+        <input type="number" placeholder="Sugar (g)" [(ngModel)]="newMeal.sugar" />
+        <input type="number" placeholder="Sodium (mg)" [(ngModel)]="newMeal.sodium" />
+        <input type="number" placeholder="Saturated Fat (g)" [(ngModel)]="newMeal.saturatedFat" />
         <button class="btn-primary" (click)="addMeal()">Add Meal</button>
       </div>
     </div>
@@ -91,9 +118,13 @@
             <div class="meal-edit-form">
               <input type="text" [(ngModel)]="editingMeal!.name" />
               <input type="number" [(ngModel)]="editingMeal!.calories" placeholder="Calories" />
-              <input type="number" [(ngModel)]="editingMeal!.protein" placeholder="Protein" />
-              <input type="number" [(ngModel)]="editingMeal!.carbs" placeholder="Carbs" />
-              <input type="number" [(ngModel)]="editingMeal!.fat" placeholder="Fat" />
+              <input type="number" [(ngModel)]="editingMeal!.protein" placeholder="Protein (g)" />
+              <input type="number" [(ngModel)]="editingMeal!.carbs" placeholder="Carbs (g)" />
+              <input type="number" [(ngModel)]="editingMeal!.fat" placeholder="Fat (g)" />
+              <input type="number" [(ngModel)]="editingMeal!.fiber" placeholder="Fiber (g)" />
+              <input type="number" [(ngModel)]="editingMeal!.sugar" placeholder="Sugar (g)" />
+              <input type="number" [(ngModel)]="editingMeal!.sodium" placeholder="Sodium (mg)" />
+              <input type="number" [(ngModel)]="editingMeal!.saturatedFat" placeholder="Saturated Fat (g)" />
               <div class="meal-edit-actions">
                 <button class="btn-save" (click)="saveEdit()">Save</button>
                 <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>

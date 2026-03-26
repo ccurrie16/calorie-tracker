@@ -17,6 +17,10 @@ interface FoodResult {
   protein100g: number;
   carbs100g: number;
   fat100g: number;
+  fiber100g: number;
+  sugar100g: number;
+  sodium100g: number;
+  saturatedFat100g: number;
   servingSize: number | null;
 }
 
@@ -27,6 +31,10 @@ interface Meal {
   protein: number;
   carbs: number;
   fat: number;
+  fiber: number;
+  sugar: number;
+  sodium: number;
+  saturatedFat: number;
   date: string;
   userId: string;
 }
@@ -63,6 +71,10 @@ export class Dashboard implements OnInit, OnDestroy {
     protein: 0,
     carbs: 0,
     fat: 0,
+    fiber: 0,
+    sugar: 0,
+    sodium: 0,
+    saturatedFat: 0,
     date: this.selectedDate,
     userId: ''
   };
@@ -132,6 +144,10 @@ export class Dashboard implements OnInit, OnDestroy {
           protein100g: Math.round(get('Protein') * 10) / 10,
           carbs100g: Math.round(get('Carbohydrate, by difference') * 10) / 10,
           fat100g: Math.round(get('Total lipid (fat)') * 10) / 10,
+          fiber100g: Math.round(get('Fiber, total dietary') * 10) / 10,
+          sugar100g: Math.round(get('Sugars, total including NLEA') * 10) / 10,
+          sodium100g: Math.round(get('Sodium, Na')),
+          saturatedFat100g: Math.round(get('Fatty acids, total saturated') * 10) / 10,
           servingSize: f.servingSize && f.servingSizeUnit?.toLowerCase() === 'g' ? Math.round(f.servingSize) : null,
         } as FoodResult;
       })
@@ -146,6 +162,10 @@ export class Dashboard implements OnInit, OnDestroy {
     this.newMeal.protein = Math.round(food.protein100g * factor * 10) / 10;
     this.newMeal.carbs = Math.round(food.carbs100g * factor * 10) / 10;
     this.newMeal.fat = Math.round(food.fat100g * factor * 10) / 10;
+    this.newMeal.fiber = Math.round(food.fiber100g * factor * 10) / 10;
+    this.newMeal.sugar = Math.round(food.sugar100g * factor * 10) / 10;
+    this.newMeal.sodium = Math.round(food.sodium100g * factor);
+    this.newMeal.saturatedFat = Math.round(food.saturatedFat100g * factor * 10) / 10;
     this.searchQuery = '';
     this.searchResults = [];
     this.showResults = false;
@@ -233,6 +253,26 @@ export class Dashboard implements OnInit, OnDestroy {
     return this.meals.reduce((sum, meal) => sum + meal.fat, 0);
   }
 
+  get totalFiber() {
+    return Math.round(this.meals.reduce((sum, meal) => sum + (meal.fiber ?? 0), 0) * 10) / 10;
+  }
+
+  get totalSugar() {
+    return Math.round(this.meals.reduce((sum, meal) => sum + (meal.sugar ?? 0), 0) * 10) / 10;
+  }
+
+  get totalSodium() {
+    return Math.round(this.meals.reduce((sum, meal) => sum + (meal.sodium ?? 0), 0));
+  }
+
+  get totalSaturatedFat() {
+    return Math.round(this.meals.reduce((sum, meal) => sum + (meal.saturatedFat ?? 0), 0) * 10) / 10;
+  }
+
+  nutrientBar(value: number, max: number) {
+    return Math.min((value / max) * 100, 100);
+  }
+
   get calorieProgress() {
     return Math.min((this.totalCalories / this.dailyGoal) * 100, 100);
   }
@@ -250,6 +290,10 @@ export class Dashboard implements OnInit, OnDestroy {
       protein: 0,
       carbs: 0,
       fat: 0,
+      fiber: 0,
+      sugar: 0,
+      sodium: 0,
+      saturatedFat: 0,
       date: this.selectedDate,
       userId: ''
     };
