@@ -320,6 +320,32 @@
   color: #bbb;
 }
 
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-field label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #888;
+}
+
+.label-protein  { color: #2563eb; }
+.label-carbs    { color: #d97706; }
+.label-fat      { color: #dc2626; }
+.label-fiber    { color: #16a34a; }
+.label-sugar    { color: #db2777; }
+.label-sodium   { color: #7c3aed; }
+.label-sat-fat  { color: #ea580c; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
 .meal-form input {
   padding: 0.65rem 0.85rem;
   border: 1px solid #e0e0e0;
@@ -366,46 +392,57 @@
 }
 
 .meal-item {
+  padding: 0.85rem 1rem;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.meal-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.7rem 0.85rem;
-  background: #fafafa;
-  border-radius: 10px;
-  transition: background 0.15s;
-}
-
-.meal-item:hover {
-  background: #f2f2f2;
-}
-
-.meal-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
+  gap: 0.5rem;
 }
 
 .meal-name {
   font-weight: 600;
   color: #1a1a1a;
   font-size: 0.9rem;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.meal-macros {
-  font-size: 0.75rem;
-  color: #999;
+.meal-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 .meal-calories {
   font-weight: 700;
   color: #1a1a1a;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
-.meal-actions {
+.meal-nutrients {
   display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.meal-nutrient-row {
+  display: grid;
+  grid-template-columns: 4rem 1fr 3rem;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .btn-edit, .btn-delete {

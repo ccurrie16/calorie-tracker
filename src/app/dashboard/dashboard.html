@@ -95,15 +95,44 @@
             </div>
           </div>
         </div>
-        <input type="text" placeholder="Meal name" [(ngModel)]="newMeal.name" />
-        <input type="number" placeholder="Calories" [(ngModel)]="newMeal.calories" />
-        <input type="number" placeholder="Protein (g)" [(ngModel)]="newMeal.protein" />
-        <input type="number" placeholder="Carbs (g)" [(ngModel)]="newMeal.carbs" />
-        <input type="number" placeholder="Fat (g)" [(ngModel)]="newMeal.fat" />
-        <input type="number" placeholder="Fiber (g)" [(ngModel)]="newMeal.fiber" />
-        <input type="number" placeholder="Sugar (g)" [(ngModel)]="newMeal.sugar" />
-        <input type="number" placeholder="Sodium (mg)" [(ngModel)]="newMeal.sodium" />
-        <input type="number" placeholder="Saturated Fat (g)" [(ngModel)]="newMeal.saturatedFat" />
+        <div class="form-field">
+          <label>Meal name</label>
+          <input type="text" [(ngModel)]="newMeal.name" />
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Calories</label>
+            <input type="number" [(ngModel)]="newMeal.calories" />
+          </div>
+          <div class="form-field">
+            <label class="label-protein">Protein (g)</label>
+            <input type="number" [(ngModel)]="newMeal.protein" />
+          </div>
+          <div class="form-field">
+            <label class="label-carbs">Carbs (g)</label>
+            <input type="number" [(ngModel)]="newMeal.carbs" />
+          </div>
+          <div class="form-field">
+            <label class="label-fat">Fat (g)</label>
+            <input type="number" [(ngModel)]="newMeal.fat" />
+          </div>
+          <div class="form-field">
+            <label class="label-fiber">Fiber (g)</label>
+            <input type="number" [(ngModel)]="newMeal.fiber" />
+          </div>
+          <div class="form-field">
+            <label class="label-sugar">Sugar (g)</label>
+            <input type="number" [(ngModel)]="newMeal.sugar" />
+          </div>
+          <div class="form-field">
+            <label class="label-sodium">Sodium (mg)</label>
+            <input type="number" [(ngModel)]="newMeal.sodium" />
+          </div>
+          <div class="form-field">
+            <label class="label-sat-fat">Sat. Fat (g)</label>
+            <input type="number" [(ngModel)]="newMeal.saturatedFat" />
+          </div>
+        </div>
         <button class="btn-primary" (click)="addMeal()">Add Meal</button>
       </div>
     </div>
@@ -132,14 +161,50 @@
             </div>
           </ng-container>
           <ng-template #viewMode>
-            <div class="meal-info">
+            <div class="meal-card-header">
               <span class="meal-name">{{ meal.name }}</span>
-              <span class="meal-macros"><span class="text-protein">P: {{ meal.protein }}g</span> · <span class="text-carbs">C: {{ meal.carbs }}g</span> · <span class="text-fat">F: {{ meal.fat }}g</span></span>
+              <div class="meal-card-actions">
+                <span class="meal-calories">{{ meal.calories }} kcal</span>
+                <button class="btn-edit" (click)="startEdit(meal)">Edit</button>
+                <button class="btn-delete" (click)="deleteMeal(meal)">Delete</button>
+              </div>
             </div>
-            <div class="meal-actions">
-              <span class="meal-calories">{{ meal.calories }} kcal</span>
-              <button class="btn-edit" (click)="startEdit(meal)">Edit</button>
-              <button class="btn-delete" (click)="deleteMeal(meal)">Delete</button>
+            <div class="meal-nutrients">
+              <div class="meal-nutrient-row">
+                <span class="nutrient-label">Protein</span>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill protein" [style.width.%]="nutrientBar(meal.protein, 50)"></div></div>
+                <span class="nutrient-value">{{ meal.protein }}g</span>
+              </div>
+              <div class="meal-nutrient-row">
+                <span class="nutrient-label">Carbs</span>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill carbs" [style.width.%]="nutrientBar(meal.carbs, 275)"></div></div>
+                <span class="nutrient-value">{{ meal.carbs }}g</span>
+              </div>
+              <div class="meal-nutrient-row">
+                <span class="nutrient-label">Fat</span>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill fat" [style.width.%]="nutrientBar(meal.fat, 78)"></div></div>
+                <span class="nutrient-value">{{ meal.fat }}g</span>
+              </div>
+              <div class="meal-nutrient-row">
+                <span class="nutrient-label">Fiber</span>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill fiber" [style.width.%]="nutrientBar(meal.fiber ?? 0, 28)"></div></div>
+                <span class="nutrient-value">{{ meal.fiber ?? 0 }}g</span>
+              </div>
+              <div class="meal-nutrient-row">
+                <span class="nutrient-label">Sugar</span>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill sugar" [style.width.%]="nutrientBar(meal.sugar ?? 0, 50)"></div></div>
+                <span class="nutrient-value">{{ meal.sugar ?? 0 }}g</span>
+              </div>
+              <div class="meal-nutrient-row">
+                <span class="nutrient-label">Sodium</span>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill sodium" [style.width.%]="nutrientBar(meal.sodium ?? 0, 2300)"></div></div>
+                <span class="nutrient-value">{{ meal.sodium ?? 0 }}mg</span>
+              </div>
+              <div class="meal-nutrient-row">
+                <span class="nutrient-label">Sat. Fat</span>
+                <div class="nutrient-bar-track"><div class="nutrient-bar-fill sat-fat" [style.width.%]="nutrientBar(meal.saturatedFat ?? 0, 20)"></div></div>
+                <span class="nutrient-value">{{ meal.saturatedFat ?? 0 }}g</span>
+              </div>
             </div>
           </ng-template>
         </div>
