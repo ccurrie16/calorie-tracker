@@ -75,6 +75,9 @@ export class Dashboard implements OnInit, OnDestroy {
   favorites: Favorite[] = [];
   private favoritesUnsubscribe: Unsubscribe | null = null;
 
+  weeklyData: { date: string; day: string; calories: number }[] = [];
+  private weeklyUnsubscribe: Unsubscribe | null = null;
+
   searchQuery = '';
   searchResults: FoodResult[] = [];
   isSearching = false;
@@ -100,6 +103,7 @@ export class Dashboard implements OnInit, OnDestroy {
     this.loadGoal();
     this.loadMeals();
     this.loadFavorites();
+    this.loadWeeklyData();
     this.searchSubscription = this.searchSubject.pipe(
       debounceTime(350),
       distinctUntilChanged(),
@@ -124,7 +128,41 @@ export class Dashboard implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.mealsUnsubscribe?.();
     this.favoritesUnsubscribe?.();
+    this.weeklyUnsubscribe?.();
     this.searchSubscription?.unsubscribe();
+  }
+
+  private loadWeeklyData() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return {
+        date: d.toISOString().split('T')[0],
+        day: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        calories: 0,
+      };
+    });
+
+    const startDate = days[0].date;
+    const q = query(
+      collection(db, 'meals'),
+      where('userId', '==', user.uid),
+      where('date', '>=', startDate)
+    );
+
+    this.weeklyUnsubscribe = onSnapshot(q, snapshot => {
+      this.ngZone.run(() => {
+        const totals: Record<string, number> = {};
+        snapshot.docs.forEach(d => {
+          const meal = d.data() as Meal;
+          totals[meal.date] = (totals[meal.date] ?? 0) + meal.calories;
+        });
+        this.weeklyData = days.map(d => ({ ...d, calories: totals[d.date] ?? 0 }));
+      });
+    });
   }
 
   private loadFavorites() {
@@ -316,6 +354,11 @@ export class Dashboard implements OnInit, OnDestroy {
 
   nutrientBar(value: number, max: number) {
     return Math.min((value / max) * 100, 100);
+  }
+
+  weeklyBarHeight(calories: number) {
+    const max = Math.max(this.dailyGoal, ...this.weeklyData.map(d => d.calories));
+    return Math.round((calories / max) * 100);
   }
 
   get proteinGoal() { return Math.round(this.dailyGoal * 0.25 / 4); }

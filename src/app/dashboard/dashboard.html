@@ -73,6 +73,21 @@
       </div>
     </div>
 
+    <!-- Weekly Summary -->
+    <div class="card">
+      <h2>Weekly Summary</h2>
+      <div class="weekly-chart">
+        <div class="weekly-bar-wrap" *ngFor="let day of weeklyData" [class.today]="day.date === selectedDate">
+          <span class="weekly-cal-label">{{ day.calories > 0 ? day.calories : '' }}</span>
+          <div class="weekly-bar-track">
+            <div class="weekly-bar-fill" [style.height.%]="weeklyBarHeight(day.calories)"></div>
+            <div class="weekly-goal-line" [style.bottom.%]="weeklyBarHeight(dailyGoal)"></div>
+          </div>
+          <span class="weekly-day-label">{{ day.day }}</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Add Meal Form -->
     <div class="card">
       <h2>Log a Meal</h2>
