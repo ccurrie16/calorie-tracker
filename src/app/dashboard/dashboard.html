@@ -51,6 +51,27 @@
     <div class="card">
       <h2>Log a Meal</h2>
       <div class="meal-form">
+        <div class="search-wrapper">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search food database..."
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchInput()"
+            autocomplete="off"
+          />
+          <span class="search-spinner" *ngIf="isSearching">⏳</span>
+          <div class="search-results" *ngIf="showResults">
+            <div
+              class="search-result-item"
+              *ngFor="let food of searchResults"
+              (click)="selectFood(food)"
+            >
+              <span class="search-result-name">{{ food.name }}</span>
+              <span class="search-result-meta">{{ food.calories100g }} kcal · P {{ food.protein100g }}g · C {{ food.carbs100g }}g · F {{ food.fat100g }}g <span class="per-100g">{{ food.servingSize ? 'per ' + food.servingSize + 'g serving' : 'per 100g' }}</span></span>
+            </div>
+          </div>
+        </div>
         <input type="text" placeholder="Meal name" [(ngModel)]="newMeal.name" />
         <input type="number" placeholder="Calories" [(ngModel)]="newMeal.calories" />
         <input type="number" placeholder="Protein (g)" [(ngModel)]="newMeal.protein" />

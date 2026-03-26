@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,6 +6,19 @@ import { collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc
 import { auth, db } from '../firebase';
 import { AuthService } from '../auth/auth';
 import { inject } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { from } from 'rxjs';
+
+interface FoodResult {
+  id: string;
+  name: string;
+  calories100g: number;
+  protein100g: number;
+  carbs100g: number;
+  fat100g: number;
+  servingSize: number | null;
+}
 
 interface Meal {
   id?: string;
@@ -27,6 +40,7 @@ interface Meal {
 export class Dashboard implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private ngZone = inject(NgZone);
 
   meals: Meal[] = [];
   editingMeal: Meal | null = null;
@@ -35,6 +49,13 @@ export class Dashboard implements OnInit, OnDestroy {
   goalInput = 2000;
   selectedDate = new Date().toISOString().split('T')[0];
   private mealsUnsubscribe: Unsubscribe | null = null;
+
+  searchQuery = '';
+  searchResults: FoodResult[] = [];
+  isSearching = false;
+  showResults = false;
+  private searchSubject = new Subject<string>();
+  private searchSubscription: any;
 
   newMeal: Meal = {
     name: '',
@@ -49,10 +70,85 @@ export class Dashboard implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadGoal();
     this.loadMeals();
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(350),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (!query.trim()) {
+          this.searchResults = [];
+          this.isSearching = false;
+          return from([[]]);
+        }
+        this.isSearching = true;
+        return from(this.fetchFoods(query));
+      })
+    ).subscribe(results => {
+      this.ngZone.run(() => {
+        this.searchResults = results as FoodResult[];
+        this.isSearching = false;
+        this.showResults = this.searchResults.length > 0;
+      });
+    });
   }
 
   ngOnDestroy() {
     this.mealsUnsubscribe?.();
+    this.searchSubscription?.unsubscribe();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.search-wrapper')) {
+      this.showResults = false;
+    }
+  }
+
+  onSearchInput() {
+    this.searchSubject.next(this.searchQuery);
+    if (this.searchQuery.trim()) {
+      this.isSearching = true;
+    } else {
+      this.searchResults = [];
+      this.showResults = false;
+      this.isSearching = false;
+    }
+  }
+
+  private async fetchFoods(query: string): Promise<FoodResult[]> {
+    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(query)}&pageSize=7&api_key=DEMO_KEY`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return (data.foods || [])
+      .map((f: any) => {
+        const nutrients = f.foodNutrients ?? [];
+        const get = (name: string) => nutrients.find((n: any) => n.nutrientName === name)?.value ?? 0;
+        const calories = Math.round(get('Energy'));
+        if (!calories) return null;
+        return {
+          id: f.fdcId,
+          name: f.description,
+          calories100g: calories,
+          protein100g: Math.round(get('Protein') * 10) / 10,
+          carbs100g: Math.round(get('Carbohydrate, by difference') * 10) / 10,
+          fat100g: Math.round(get('Total lipid (fat)') * 10) / 10,
+          servingSize: f.servingSize && f.servingSizeUnit?.toLowerCase() === 'g' ? Math.round(f.servingSize) : null,
+        } as FoodResult;
+      })
+      .filter(Boolean);
+  }
+
+  selectFood(food: FoodResult) {
+    const serving = food.servingSize ?? 100;
+    const factor = serving / 100;
+    this.newMeal.name = food.name;
+    this.newMeal.calories = Math.round(food.calories100g * factor);
+    this.newMeal.protein = Math.round(food.protein100g * factor * 10) / 10;
+    this.newMeal.carbs = Math.round(food.carbs100g * factor * 10) / 10;
+    this.newMeal.fat = Math.round(food.fat100g * factor * 10) / 10;
+    this.searchQuery = '';
+    this.searchResults = [];
+    this.showResults = false;
   }
 
   get isToday() {
