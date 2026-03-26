@@ -1,59 +1,78 @@
-# CalorieTracker
+# Calorie Tracker
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+A personal nutrition tracking web app built with Angular and Firebase.
 
-## Development server
+![Daily progress and weekly summary](public/Screenshot%201.png)
+![Meal logging and nutrient breakdown](public/Screenshot%202.png)
 
-To start a local development server, run:
+## Features
 
-```bash
-ng serve
-```
+- **Daily calorie tracking** with an adjustable calorie goal
+- **Full nutrient tracking** — calories, protein, carbs, fat, fiber, sugar, sodium, and saturated fat
+- **Food database search** powered by the USDA FoodData Central API — search any food and auto-fill all nutrient fields
+- **Meal favorites** — save frequently eaten meals and re-log them with one click
+- **Weekly summary** — bar chart showing your calorie intake across the past 7 days
+- **Date navigation** — browse and log meals for any past day
+- **Color-coded nutrient bars** on both the daily summary and individual meal cards
+- **Google authentication** via Firebase Auth
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Tech Stack
 
-## Code scaffolding
+- [Angular 21](https://angular.dev) with SSR
+- [Firebase](https://firebase.google.com) — Firestore (database) + Auth
+- [USDA FoodData Central API](https://fdc.nal.usda.gov) — food search
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Getting Started
 
-```bash
-ng generate component component-name
-```
+### Prerequisites
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- Node.js 18+
+- A Firebase project with Firestore and Google Auth enabled
+- A USDA FoodData Central API key (free at [fdc.nal.usda.gov](https://fdc.nal.usda.gov))
 
-```bash
-ng generate --help
-```
+### Setup
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+1. Clone the repo and install dependencies:
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
+2. Update `src/app/firebase.ts` with your Firebase project config.
 
-For end-to-end (e2e) testing, run:
+3. Replace the API key in `src/app/dashboard/dashboard.ts`:
+
+```ts
+api_key=YOUR_USDA_API_KEY
+```
+
+4. Set your Firestore security rules:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /meals/{meal} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+    match /favorites/{fav} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+5. Create a composite Firestore index on the `meals` collection for `userId (Ascending)` + `date (Ascending)`.
+
+### Running locally
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Then open `http://localhost:4200`.
