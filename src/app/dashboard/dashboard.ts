@@ -24,6 +24,20 @@ interface FoodResult {
   servingSize: number | null;
 }
 
+interface Favorite {
+  id?: string;
+  userId: string;
+  name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  sugar: number;
+  sodium: number;
+  saturatedFat: number;
+}
+
 interface Meal {
   id?: string;
   name: string;
@@ -58,6 +72,9 @@ export class Dashboard implements OnInit, OnDestroy {
   selectedDate = new Date().toISOString().split('T')[0];
   private mealsUnsubscribe: Unsubscribe | null = null;
 
+  favorites: Favorite[] = [];
+  private favoritesUnsubscribe: Unsubscribe | null = null;
+
   searchQuery = '';
   searchResults: FoodResult[] = [];
   isSearching = false;
@@ -82,6 +99,7 @@ export class Dashboard implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadGoal();
     this.loadMeals();
+    this.loadFavorites();
     this.searchSubscription = this.searchSubject.pipe(
       debounceTime(350),
       distinctUntilChanged(),
@@ -105,7 +123,34 @@ export class Dashboard implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.mealsUnsubscribe?.();
+    this.favoritesUnsubscribe?.();
     this.searchSubscription?.unsubscribe();
+  }
+
+  private loadFavorites() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const q = query(collection(db, 'favorites'), where('userId', '==', user.uid));
+    this.favoritesUnsubscribe = onSnapshot(q, snapshot => {
+      this.favorites = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Favorite));
+    });
+  }
+
+  async saveFavorite(meal: Meal) {
+    const user = auth.currentUser;
+    if (!user) return;
+    const { id, date, ...rest } = meal;
+    await addDoc(collection(db, 'favorites'), { ...rest, userId: user.uid });
+  }
+
+  async deleteFavorite(fav: Favorite) {
+    if (!fav.id) return;
+    await deleteDoc(doc(db, 'favorites', fav.id));
+  }
+
+  logFavorite(fav: Favorite) {
+    const { id, userId, ...rest } = fav;
+    this.newMeal = { ...this.newMeal, ...rest };
   }
 
   @HostListener('document:click', ['$event'])
@@ -128,7 +173,7 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   private async fetchFoods(query: string): Promise<FoodResult[]> {
-    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(query)}&pageSize=7&api_key=DEMO_KEY`;
+    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(query)}&pageSize=7&api_key=2619od3ZCTqSXraxF7o4S4KSvdfDoAqrrd5Uy23y`;
     const response = await fetch(url);
     const data = await response.json();
     return (data.foods || [])

@@ -77,6 +77,12 @@
     <div class="card">
       <h2>Log a Meal</h2>
       <div class="meal-form">
+        <div class="favorites-list" *ngIf="favorites.length > 0">
+          <div class="favorite-chip" *ngFor="let fav of favorites">
+            <span class="favorite-chip-name" (click)="logFavorite(fav)">{{ fav.name }} <span class="favorite-chip-cal">{{ fav.calories }} kcal</span></span>
+            <button class="favorite-chip-delete" (click)="deleteFavorite(fav)">×</button>
+          </div>
+        </div>
         <div class="search-wrapper">
           <input
             type="text"
@@ -168,6 +174,7 @@
               <span class="meal-name">{{ meal.name }}</span>
               <div class="meal-card-actions">
                 <span class="meal-calories">{{ meal.calories }} kcal</span>
+                <button class="btn-save-fav" (click)="saveFavorite(meal)" title="Save as favorite">★</button>
                 <button class="btn-edit" (click)="startEdit(meal)">Edit</button>
                 <button class="btn-delete" (click)="deleteMeal(meal)">Delete</button>
               </div>
